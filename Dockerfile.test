@@ -1,0 +1,22 @@
+# --- Build Stage ---
+# Use an official Node.js image as the base for building the application.
+# We name this stage 'build' to be able to reference it later.
+FROM node:18-alpine AS build
+
+# Set the working directory inside the container.
+WORKDIR /app
+
+# Copy package.json and package-lock.json first to leverage Docker's layer caching.
+# This layer will only be rebuilt if these files change.
+COPY package*.json ./
+
+COPY . .
+
+# Install all dependencies, including devDependencies, which might be needed for build or test steps.
+RUN npm install
+
+# Expose the port the application runs on.
+EXPOSE 3000
+
+# The command to run when the container starts.
+CMD ["npm", "test"]
